@@ -18,11 +18,20 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        async play({ commit, state }, payload) {
+        async play({ commit, state, dispatch }, payload) {
             if (typeof payload !== 'undefined') {
                 state.currentSong = payload;
 
                 state.player.src = payload.src;
+
+                state.player.addEventListener("timeupdate", () => {
+                    state.percent = (state.player.currentTime * 100) / state.player.duration;
+                });
+
+                state.player.addEventListener("ended", () => {
+                    dispatch('pause');
+                });
+
             }
 
             try {
@@ -30,7 +39,7 @@ export default new Vuex.Store({
             } catch (error) {
                 console.log(`DEBUG: there is some problem in store: play()\n payload:`)
                 console.log(payload);
-                console.error(error);    
+                console.error(error);
             }
 
             commit('play')

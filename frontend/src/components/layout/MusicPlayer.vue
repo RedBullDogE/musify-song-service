@@ -1,19 +1,31 @@
 <template>
     <div class="player-container">
         <div class="player">
-            <div class="player__control">
-                <div class="player__header">
-                    <h2 class="song-name">{{ currentSong.name }}</h2>
-                    <p class="song-artist">{{ currentSong.artist }}</p>
+            <div class="progressbar-container">
+                <KProgress
+                    v-if="currentSong"
+                    :percent="percent || 0"
+                    :show-text="false"
+                    :color="'#df83f1'"
+                    :flow-second="6"
+                    class="progressbar"
+                />
+                <div class="progressbar-time" v-if="player.src">
+                    {{ player.currentTime || 0 | formatTime }} /
+                    {{ player.duration || 0 | formatTime }}
                 </div>
+            </div>
+
+            <div class="player__info">
+                <h2 class="song-name">{{ currentSong.name }}</h2>
+                <p class="song-artist">{{ currentSong.artist }}</p>
+            </div>
+
+            <div class="player__control">
                 <button class="prev-btn">
                     <ion-icon name="play-skip-back"></ion-icon>
                 </button>
-                <button
-                    class="play-btn"
-                    v-if="!isPlaying"
-                    @click="play"
-                >
+                <button class="play-btn" v-if="!isPlaying" @click="play">
                     <ion-icon name="play"></ion-icon>
                 </button>
                 <button class="pause-btn" v-else @click="pause">
