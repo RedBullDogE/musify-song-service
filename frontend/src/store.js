@@ -7,7 +7,8 @@ export default new Vuex.Store({
     state: {
         currentSong: {},
         player: new Audio(),
-        isPlaying: false
+        isPlaying: false,
+        percent: 0
     },
     mutations: {
         play(state) {
@@ -15,6 +16,9 @@ export default new Vuex.Store({
         },
         pause(state) {
             state.isPlaying = false
+        },
+        changeVolume(state, payload) {
+            state.player.volume = payload
         }
     },
     actions: {
@@ -48,6 +52,9 @@ export default new Vuex.Store({
             state.player.pause()
 
             commit('pause')
+        },
+        changeVolume({ commit }, payload) {
+            commit('changeVolume', payload)
         }
     }
 })

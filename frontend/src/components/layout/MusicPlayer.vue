@@ -34,6 +34,7 @@
                 <button class="next-btn">
                     <ion-icon name="play-skip-forward"></ion-icon>
                 </button>
+                <VueSlider :value="player.volume * 100" @change="changeVolume" style="width: 100px;" />
             </div>
         </div>
     </div>
@@ -41,16 +42,20 @@
 
 <script>
 import { mapState } from "vuex";
+import KProgress from "k-progress";
+import VueSlider from 'vue-slider-component';
+import 'vue-slider-component/theme/default.css'
 
 export default {
     data() {
         return {};
     },
     computed: {
-        ...mapState({
-            currentSong: "currentSong",
-            isPlaying: "isPlaying",
-        }),
+        ...mapState(["currentSong", "isPlaying", "player", "percent"]),
+    },
+    components: {
+        KProgress,
+        VueSlider
     },
     methods: {
         play() {
@@ -59,6 +64,9 @@ export default {
         pause() {
             this.$store.dispatch("pause");
         },
+        changeVolume(value) {
+            this.$store.dispatch("changeVolume", value / 100)
+        }
     },
 };
 </script>
@@ -80,10 +88,7 @@ export default {
 
         background-color: $color-purple-dark;
         box-shadow: 0 0 3rem rgba($color-black, 0.3);
-
-        &__header {
-            margin-right: auto;
-        }
+        color: #d3d3d3;
 
         &__control {
             display: flex;
@@ -123,6 +128,24 @@ export default {
                     height: 4rem;
                     width: 4rem;
                 }
+            }
+        }
+
+        .progressbar-container {
+            width: 100%;
+            display: flex;
+
+            .progressbar {
+                flex-basis: auto;
+                flex-grow: 1;
+
+                .k-progress-outer {
+                    padding: 0;
+                }
+            }
+            
+            .progressbar-time {
+                margin-left: 1rem;
             }
         }
     }

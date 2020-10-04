@@ -23,7 +23,7 @@ import { mapState } from "vuex";
 export default {
     props: ["song"],
     computed: {
-        ...mapState(["currentSong", "isPlaying"]),
+        ...mapState(["currentSong", "isPlaying", "player"]),
         isCurrentSongInPlayer() {
             return (
                 this.currentSong.length === this.song.length &&
