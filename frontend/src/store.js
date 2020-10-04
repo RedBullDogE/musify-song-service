@@ -5,11 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        currentSong: {
-            name: '',
-            artist: '',
-            src: '',
-        },
+        currentSong: {},
         player: new Audio(),
         isPlaying: false
     },
@@ -22,16 +18,21 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        play({ commit, state }, payload) {
+        async play({ commit, state }, payload) {
             if (typeof payload !== 'undefined') {
-                state.currentSong.name = payload.name;
-                state.currentSong.artist = payload.artist;
-                state.currentSong.src = payload.song_file;
+                state.currentSong = payload;
 
-                state.player.src = payload.song_file;
+                state.player.src = payload.src;
             }
 
-            state.player.play()
+            try {
+                await state.player.play()
+            } catch (error) {
+                console.log(`DEBUG: there is some problem in store: play()\n payload:`)
+                console.log(payload);
+                console.error(error);    
+            }
+
             commit('play')
         },
         pause({ commit, state }) {

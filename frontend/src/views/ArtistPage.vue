@@ -10,14 +10,14 @@
                     />
                 </div>
                 <h2 class="artist-info__title">{{ artist.name }}</h2>
-                <div
+                <!-- <div
                     class="followed-btn"
                     @click="artistFollowed = !artistFollowed"
                 >
                     <ion-icon
                         :name="artistFollowed ? 'heart-outline' : 'heart'"
                     ></ion-icon>
-                </div>
+                </div> -->
 
                 <!-- <p class="artist-info__desc">{{ artist.description || "-" }}</p> -->
                 <p class="artist-info__desc">
@@ -66,7 +66,6 @@ export default {
         return {
             artist: null,
             notFound: false,
-            artistFollowed: false,
         };
     },
     components: {

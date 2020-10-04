@@ -1,6 +1,13 @@
 <template>
     <div class="song" v-if="song">
-        <button class="play" @click="playSong">
+        <button
+            class="pause"
+            @click="pauseSong"
+            v-if="isCurrentSongInPlayer && isPlaying"
+        >
+            <ion-icon name="pause"></ion-icon>
+        </button>
+        <button class="play" @click="playSong" v-else>
             <ion-icon name="play"></ion-icon>
         </button>
         <div>
@@ -11,11 +18,31 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
     props: ["song"],
+    computed: {
+        ...mapState(["currentSong", "isPlaying"]),
+        isCurrentSongInPlayer() {
+            return (
+                this.currentSong.length === this.song.length &&
+                this.currentSong.name === this.song.name &&
+                this.currentSong.artist === this.song.artist &&
+                this.currentSong.src === this.song.src
+            );
+        },
+    },
     methods: {
         playSong() {
-            this.$store.dispatch('play', this.song)
+            if (this.isCurrentSongInPlayer) {
+                this.$store.dispatch("play");
+                return;
+            }
+            this.$store.dispatch("play", this.song);
+        },
+        pauseSong() {
+            this.$store.dispatch("pause");
         },
     },
 };
@@ -43,7 +70,8 @@ export default {
         font-weight: 200;
     }
 
-    .play {
+    .play,
+    .pause {
         appearance: none;
         outline: none;
         border: none;
