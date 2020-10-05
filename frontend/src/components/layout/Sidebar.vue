@@ -122,6 +122,7 @@ export default {};
     .searchbar {
         display: flex;
         margin-top: 4rem;
+        max-width: 80%;
 
         &__input {
             font-size: 1.6rem;
@@ -131,6 +132,9 @@ export default {};
             border-radius: 1rem;
             background-color: $color-purple-light-2;
             transition: all 0.2s;
+
+            width: 100%;
+
 
             &:focus {
                 box-shadow: 0 1rem 3rem rgba($color-black, 0.4);
