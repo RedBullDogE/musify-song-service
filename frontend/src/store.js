@@ -8,7 +8,7 @@ export default new Vuex.Store({
         currentSong: {},
         player: new Audio(),
         isPlaying: false,
-        percent: 0
+        curTime: 0
     },
     mutations: {
         play(state) {
@@ -19,6 +19,9 @@ export default new Vuex.Store({
         },
         changeVolume(state, payload) {
             state.player.volume = payload
+        },
+        slideSong(state, payload) {
+            state.player.currentTime = payload
         }
     },
     actions: {
@@ -29,7 +32,8 @@ export default new Vuex.Store({
                 state.player.src = payload.src;
 
                 state.player.addEventListener("timeupdate", () => {
-                    state.percent = (state.player.currentTime * 100) / state.player.duration;
+                    // state.curTime = (state.player.currentTime * 100) / state.player.duration;
+                    state.curTime = state.player.currentTime;
                 });
 
                 state.player.addEventListener("ended", () => {
@@ -55,6 +59,9 @@ export default new Vuex.Store({
         },
         changeVolume({ commit }, payload) {
             commit('changeVolume', payload)
+        },
+        slideSong({ commit }, payload) {
+            commit('slideSong', payload)
         }
     }
 })

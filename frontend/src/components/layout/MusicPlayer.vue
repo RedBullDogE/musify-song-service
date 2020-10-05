@@ -2,13 +2,26 @@
     <div class="player-container">
         <div class="player">
             <div class="progressbar-container">
-                <KProgress
+                <!-- <KProgress
                     v-if="currentSong"
                     :percent="percent || 0"
                     :show-text="false"
                     :color="'#df83f1'"
                     :flow-second="6"
                     class="progressbar"
+                /> -->
+
+                <VueSlider
+                    class="progressbar"
+                    :disabled="!player.src"
+                    :value="curTime || 0"
+                    @change="slideSong"
+                    :min="0"
+                    :max="parseInt(player.duration) || 100"
+                    tooltip="none"
+                    :processStyle="{ backgroundColor: '#df83f1' }"
+                    :dotSize="10"
+                    :dotStyle="{ opacity: 0 }"
                 />
                 <div class="progressbar-time" v-if="player.src">
                     {{ player.currentTime || 0 | formatTime }} /
@@ -34,7 +47,13 @@
                 <button class="next-btn">
                     <ion-icon name="play-skip-forward"></ion-icon>
                 </button>
-                <VueSlider :value="player.volume * 100" @change="changeVolume" style="width: 100px;" />
+                <VueSlider
+                    :value="player.volume * 100"
+                    @change="changeVolume"
+                    style="width: 100px"
+                    :processStyle="{ backgroundColor: '#df83f1' }"
+                    :dotSize="12"
+                />
             </div>
         </div>
     </div>
@@ -42,20 +61,20 @@
 
 <script>
 import { mapState } from "vuex";
-import KProgress from "k-progress";
-import VueSlider from 'vue-slider-component';
-import 'vue-slider-component/theme/default.css'
+// import KProgress from "k-progress";
+import VueSlider from "vue-slider-component";
+import "vue-slider-component/theme/default.css";
 
 export default {
     data() {
         return {};
     },
     computed: {
-        ...mapState(["currentSong", "isPlaying", "player", "percent"]),
+        ...mapState(["currentSong", "isPlaying", "player", "curTime"]),
     },
     components: {
-        KProgress,
-        VueSlider
+        // KProgress,
+        VueSlider,
     },
     methods: {
         play() {
@@ -65,8 +84,11 @@ export default {
             this.$store.dispatch("pause");
         },
         changeVolume(value) {
-            this.$store.dispatch("changeVolume", value / 100)
-        }
+            this.$store.dispatch("changeVolume", value / 100);
+        },
+        slideSong(value) {
+            this.$store.dispatch("slideSong", value);
+        },
     },
 };
 </script>
@@ -143,7 +165,7 @@ export default {
                     padding: 0;
                 }
             }
-            
+
             .progressbar-time {
                 margin-left: 1rem;
             }
