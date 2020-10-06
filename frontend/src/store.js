@@ -8,7 +8,8 @@ export default new Vuex.Store({
         currentSong: {},
         player: new Audio(),
         isPlaying: false,
-        curTime: 0
+        currentTime: 0,
+        isPlayerShown: false
     },
     mutations: {
         play(state) {
@@ -22,24 +23,35 @@ export default new Vuex.Store({
         },
         slideSong(state, payload) {
             state.player.currentTime = payload
+        },
+        showPlayer(state) {
+            state.isPlayerShown = true
+        },
+        hidePlayer(state) {
+            state.isPlayerShown = false
+            state.currentSong = {},
+            state.player = new Audio()
+            state.isPlaying = false
+            state.currentTime = 0
         }
     },
     actions: {
         async play({ commit, state, dispatch }, payload) {
             if (typeof payload !== 'undefined') {
                 state.currentSong = payload;
+                state.currentTime = 0;
 
                 state.player.src = payload.src;
 
                 state.player.addEventListener("timeupdate", () => {
-                    // state.curTime = (state.player.currentTime * 100) / state.player.duration;
-                    state.curTime = state.player.currentTime;
+                    state.currentTime = state.player.currentTime;
                 });
 
                 state.player.addEventListener("ended", () => {
                     dispatch('pause');
                 });
 
+                commit('showPlayer');
             }
 
             try {
@@ -49,7 +61,7 @@ export default new Vuex.Store({
                 console.log(`DEBUG: there is some problem in store: play()\n payload:`)
                 console.log(payload);
                 console.error(error);
-            }   
+            }
         },
         pause({ commit, state }) {
             state.player.pause()
@@ -61,6 +73,13 @@ export default new Vuex.Store({
         },
         slideSong({ commit }, payload) {
             commit('slideSong', payload)
+        },
+        hidePlayer({ commit, state, dispatch }) {
+            if (state.isPlaying) {
+                dispatch('pause')
+            }
+
+            commit('hidePlayer')
         }
     }
 })

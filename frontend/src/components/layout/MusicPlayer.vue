@@ -1,53 +1,67 @@
 <template>
-    <div class="player-container">
-        <div class="player">
-            <div class="progressbar-container">
-                <VueSlider
-                    class="progressbar"
-                    :disabled="!player.src"
-                    :value="curTime || 0"
-                    @change="slideSong"
-                    :min="0"
-                    :max="Math.ceil(player.duration) || 100"
-                    tooltip="none"
-                    :processStyle="{ backgroundColor: '#df83f1' }"
-                    :dotSize="10"
-                />
-                <div class="progressbar-time" v-if="player.src">
-                    {{ player.currentTime || 0 | formatTime }} /
-                    {{ player.duration || 0 | formatTime }}
+    <transition name="show">
+        <div class="player-container" v-show="isPlayerShown">
+            <div class="player">
+                <div class="progressbar-container">
+                    <VueSlider
+                        class="progressbar"
+                        :disabled="!player.src"
+                        :value="currentTime || 0"
+                        @change="slideSong"
+                        :min="0"
+                        :max="Math.ceil(player.duration) || 100"
+                        tooltip="none"
+                        :processStyle="{ backgroundColor: '#df83f1' }"
+                        :dotSize="10"
+                    />
+                    <div class="progressbar-time" v-if="player.src">
+                        {{ player.currentTime || 0 | formatTime }} /
+                        {{ player.duration || 0 | formatTime }}
+                    </div>
                 </div>
-            </div>
 
-            <div class="player__info">
-                <h2 class="player__info__name">{{ currentSong.name }}</h2>
-                <p class="player__info__artist">{{ currentSong.artist }}</p>
-            </div>
+                <button class="close" @click="$store.dispatch('hidePlayer')">
+                    &times;
+                </button>
 
-            <div class="player__control">
-                <button class="prev-btn">
-                    <ion-icon name="play-skip-back"></ion-icon>
-                </button>
-                <button class="play-btn" v-if="!isPlaying" @click="play">
-                    <ion-icon name="play"></ion-icon>
-                </button>
-                <button class="pause-btn" v-else @click="pause">
-                    <ion-icon name="pause"></ion-icon>
-                </button>
-                <button class="next-btn">
-                    <ion-icon name="play-skip-forward"></ion-icon>
-                </button>
-            </div>
+                <div class="player__info">
+                    <h2 class="player__info__name">{{ currentSong.name }}</h2>
+                    <p class="player__info__artist">{{ currentSong.artist }}</p>
+                </div>
 
-            <VueSlider
-                :value="player.volume * 100"
-                @change="changeVolume"
-                style="width: 10rem"
-                :processStyle="{ backgroundColor: '#df83f1' }"
-                :dotSize="12"
-            />
+                <div class="player__control">
+                    <button class="prev-btn">
+                        <ion-icon name="play-skip-back"></ion-icon>
+                    </button>
+                    <button
+                        class="play-btn"
+                        v-if="!isPlaying"
+                        @click="$store.dispatch('play')"
+                    >
+                        <ion-icon name="play"></ion-icon>
+                    </button>
+                    <button
+                        class="pause-btn"
+                        v-else
+                        @click="$store.dispatch('pause')"
+                    >
+                        <ion-icon name="pause"></ion-icon>
+                    </button>
+                    <button class="next-btn">
+                        <ion-icon name="play-skip-forward"></ion-icon>
+                    </button>
+                </div>
+
+                <VueSlider
+                    :value="player.volume * 100"
+                    @change="changeVolume"
+                    style="width: 10rem"
+                    :processStyle="{ backgroundColor: '#df83f1' }"
+                    :dotSize="12"
+                />
+            </div>
         </div>
-    </div>
+    </transition>
 </template>
 
 <script>
@@ -60,18 +74,18 @@ export default {
         return {};
     },
     computed: {
-        ...mapState(["currentSong", "isPlaying", "player", "curTime"]),
+        ...mapState([
+            "currentSong",
+            "isPlaying",
+            "player",
+            "currentTime",
+            "isPlayerShown",
+        ]),
     },
     components: {
         VueSlider,
     },
     methods: {
-        play() {
-            this.$store.dispatch("play");
-        },
-        pause() {
-            this.$store.dispatch("pause");
-        },
         changeVolume(value) {
             this.$store.dispatch("changeVolume", value / 100);
         },
@@ -102,12 +116,13 @@ export default {
         color: #d3d3d3;
 
         display: grid;
-        grid-template-columns: 1fr max-content 1fr;
+        grid-template-columns: 1fr max-content 1fr min-content;
         align-items: center;
         grid-row-gap: 1.5rem;
+        grid-column-gap: 1rem;
 
         .progressbar-container {
-            grid-column: 1 / -1;
+            grid-column: 1 / span 3;
 
             display: flex;
             width: 100%;
@@ -197,6 +212,35 @@ export default {
                 }
             }
         }
+
+        .close {
+            appearance: none;
+            outline: none;
+            border: none;
+            background: none;
+            
+            font-size: 2rem;
+            color: currentColor;
+
+            transition: all .3s;
+
+            cursor: pointer;
+
+            &:hover {
+                color: #999 ;
+            }
+        }
     }
+}
+
+.show-enter-active,
+.show-leave-active {
+    transition: all 0.5s ease-out;
+}
+
+.show-enter,
+.show-leave-to {
+    opacity: 0;
+    transform: translateY(100%);
 }
 </style>
