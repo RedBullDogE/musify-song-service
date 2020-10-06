@@ -2,26 +2,16 @@
     <div class="player-container">
         <div class="player">
             <div class="progressbar-container">
-                <!-- <KProgress
-                    v-if="currentSong"
-                    :percent="percent || 0"
-                    :show-text="false"
-                    :color="'#df83f1'"
-                    :flow-second="6"
-                    class="progressbar"
-                /> -->
-
                 <VueSlider
                     class="progressbar"
                     :disabled="!player.src"
                     :value="curTime || 0"
                     @change="slideSong"
                     :min="0"
-                    :max="parseInt(player.duration) || 100"
+                    :max="Math.ceil(player.duration) || 100"
                     tooltip="none"
                     :processStyle="{ backgroundColor: '#df83f1' }"
                     :dotSize="10"
-                    :dotStyle="{ opacity: 0 }"
                 />
                 <div class="progressbar-time" v-if="player.src">
                     {{ player.currentTime || 0 | formatTime }} /
@@ -30,8 +20,8 @@
             </div>
 
             <div class="player__info">
-                <h2 class="song-name">{{ currentSong.name }}</h2>
-                <p class="song-artist">{{ currentSong.artist }}</p>
+                <h2 class="player__info__name">{{ currentSong.name }}</h2>
+                <p class="player__info__artist">{{ currentSong.artist }}</p>
             </div>
 
             <div class="player__control">
@@ -47,21 +37,21 @@
                 <button class="next-btn">
                     <ion-icon name="play-skip-forward"></ion-icon>
                 </button>
-                <VueSlider
-                    :value="player.volume * 100"
-                    @change="changeVolume"
-                    style="width: 100px"
-                    :processStyle="{ backgroundColor: '#df83f1' }"
-                    :dotSize="12"
-                />
             </div>
+
+            <VueSlider
+                :value="player.volume * 100"
+                @change="changeVolume"
+                style="width: 10rem"
+                :processStyle="{ backgroundColor: '#df83f1' }"
+                :dotSize="12"
+            />
         </div>
     </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
-// import KProgress from "k-progress";
 import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/default.css";
 
@@ -73,7 +63,6 @@ export default {
         ...mapState(["currentSong", "isPlaying", "player", "curTime"]),
     },
     components: {
-        // KProgress,
         VueSlider,
     },
     methods: {
@@ -104,17 +93,73 @@ export default {
 
     .player {
         margin: 0 auto;
-        padding: 2rem 6rem 1.5rem 6rem;
-        max-width: 60rem;
+        padding: 2rem 4rem 1.5rem 4rem;
+        max-width: 80rem;
         border-radius: 2rem 2rem 0 0;
 
-        background-color: $color-purple-dark;
+        background-color: rgba($color-purple-dark, 0.95);
         box-shadow: 0 0 3rem rgba($color-black, 0.3);
         color: #d3d3d3;
 
+        display: grid;
+        grid-template-columns: 1fr max-content 1fr;
+        align-items: center;
+        grid-row-gap: 1.5rem;
+
+        .progressbar-container {
+            grid-column: 1 / -1;
+
+            display: flex;
+            width: 100%;
+
+            .progressbar {
+                flex-basis: auto;
+                flex-grow: 1;
+
+                .k-progress-outer {
+                    padding: 0;
+                }
+            }
+
+            .progressbar-time {
+                margin-left: 3rem;
+            }
+
+            .vue-slider {
+                cursor: pointer;
+
+                .vue-slider-dot-handle {
+                    opacity: 0;
+                    transition: opacity 0.2s;
+                }
+
+                &:hover .vue-slider-dot-handle {
+                    opacity: 1;
+                }
+            }
+        }
+
+        &__info {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+
+            &__name {
+                display: inline;
+            }
+        }
+
+        .vue-slider {
+            justify-self: end;
+        }
+
         &__control {
+            grid-column: 2 / 3;
+            grid-row: 2 / 3;
+
             display: flex;
             justify-content: center;
+            align-items: center;
 
             button {
                 appearance: none;
@@ -150,24 +195,6 @@ export default {
                     height: 4rem;
                     width: 4rem;
                 }
-            }
-        }
-
-        .progressbar-container {
-            width: 100%;
-            display: flex;
-
-            .progressbar {
-                flex-basis: auto;
-                flex-grow: 1;
-
-                .k-progress-outer {
-                    padding: 0;
-                }
-            }
-
-            .progressbar-time {
-                margin-left: 1rem;
             }
         }
     }

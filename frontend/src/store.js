@@ -44,13 +44,12 @@ export default new Vuex.Store({
 
             try {
                 await state.player.play()
+                commit('play')
             } catch (error) {
                 console.log(`DEBUG: there is some problem in store: play()\n payload:`)
                 console.log(payload);
                 console.error(error);
-            }
-
-            commit('play')
+            }   
         },
         pause({ commit, state }) {
             state.player.pause()
