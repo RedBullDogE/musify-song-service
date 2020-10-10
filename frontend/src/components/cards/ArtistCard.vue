@@ -6,7 +6,7 @@
         <div class="artist-info">
             <h3 class="artist-info__name">
                 <router-link
-                    :to="{ name: 'Artist', params: { id: artist.id } }"
+                    :to="{ name: 'ArtistHome', params: { id: artist.id } }"
                 >{{ artist.name }}</router-link>
             </h3>
             <p class="artist-info__genre">{{ artist.genre }}</p>

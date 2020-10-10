@@ -1,6 +1,6 @@
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.response import Response
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+# from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from .models import Song, Artist, Album
 from .serializers import *
@@ -24,6 +24,16 @@ class ArtistReadViewSet(ReadOnlyModelViewSet):
             return ArtistListSerializer
         elif self.action == 'retrieve':
             return ArtistDetailSerializer
+
+
+class AlbumDetailView(ReadOnlyModelViewSet):
+    queryset = Album.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return AlbumListSerializer
+        elif self.action == 'retrieve':
+            return AlbumDetailSerializer
 
 
 # APIView implementation

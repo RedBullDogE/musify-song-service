@@ -4,7 +4,10 @@ import VueRouter from 'vue-router'
 import Home from './views/Home.vue'
 import Library from './views/Library.vue'
 import Charts from './views/Charts.vue'
-import ArtistPage from './views/ArtistPage.vue'
+
+import ArtistPage from './views/artists/ArtistPage.vue'
+import ArtistHome from './views/artists/ArtistHome.vue'
+import AlbumDetail from './views/artists/AlbumDetail.vue'
 
 Vue.use(VueRouter)
 
@@ -15,20 +18,31 @@ const routes = [
         component: Home
     },
     {
-        path: '/library/',
+        path: '/library',
         name: 'Library',
         component: Library
     },
     {
-        path: '/charts/',
+        path: '/charts',
         name: 'Charts',
         component: Charts
     },
     {
         path: '/artist/:id',
-        name: 'Artist',
-        component: ArtistPage
-    }
+        component: ArtistPage,
+        children: [
+            {
+                path: '/',
+                name: 'ArtistHome',
+                component: ArtistHome
+            },
+            {
+                path: 'album/:albumId',
+                name: 'Album',
+                component: AlbumDetail
+            }
+        ]
+    },
     //   {
     //     path: '/about',
     //     name: 'About',

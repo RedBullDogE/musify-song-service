@@ -4,11 +4,11 @@
 
         <template v-if="!error">
             <div v-if="artists.length" class="artist-grid">
-                <artist-card
+                <ArtistCard
                     v-for="artist in artists"
                     :key="artist.id"
                     :artist="artist"
-                ></artist-card>
+                />
             </div>
         </template>
         <p class="error-info" v-else>
@@ -33,7 +33,7 @@ export default {
         };
     },
     components: {
-        "artist-card": ArtistCard,
+        ArtistCard,
     },
     methods: {
         async fetchArtists() {

@@ -23,7 +23,7 @@ class AlbumListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Album
-        fields = ('id', 'name', 'artist', 'genre', 'cover')
+        fields = ('id', 'name', 'artist', 'genre', 'cover', 'pub_year')
 
 
 class ArtistDetailSerializer(serializers.ModelSerializer):
@@ -48,4 +48,14 @@ class SongDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Song
+        fields = '__all__'
+
+class AlbumDetailSerializer(serializers.ModelSerializer):
+    songs = SongListSerializer(
+        read_only=True,
+        many=True
+    )
+
+    class Meta:
+        model = Album
         fields = '__all__'

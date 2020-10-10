@@ -6,6 +6,7 @@ from .views import *
 router = DefaultRouter()
 router.register('songs', SongReadViewSet)
 router.register('artists', ArtistReadViewSet)
+router.register('albums', AlbumDetailView)
 
 urlpatterns = router.urls
 

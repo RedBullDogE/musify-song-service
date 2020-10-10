@@ -1,6 +1,6 @@
 <template>
-    <div class="artist-page" v-if="!notFound">
-        <template v-if="artist">
+    <div v-if="!notFound">
+        <div class="artist-home" v-if="artist">
             <div class="artist-info">
                 <div class="artist-info__picture">
                     <img
@@ -10,66 +10,58 @@
                     />
                 </div>
                 <h2 class="artist-info__title">{{ artist.name }}</h2>
-                <!-- <div
-                    class="followed-btn"
-                    @click="artistFollowed = !artistFollowed"
-                >
-                    <ion-icon
-                        :name="artistFollowed ? 'heart-outline' : 'heart'"
-                    ></ion-icon>
-                </div> -->
 
-                <!-- <p class="artist-info__desc">{{ artist.description || "-" }}</p> -->
-                <p class="artist-info__desc">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Deleniti minima, veritatis voluptas id similique aspernatur!
-                    Sunt, ea magnam maxime, excepturi nam officia iste sequi
-                    vitae illo quas tenetur quo! Omnis. Lorem ipsum dolor sit
-                    amet consectetur adipisicing elit. Deleniti minima,
-                    veritatis voluptas id similique aspernatur! Sunt, ea magnam
-                    maxime, excepturi nam officia iste sequi vitae illo quas
-                    tenetur quo! Omnis.
-                </p>
+                <p class="artist-info__desc">{{ artist.description || "-" }}</p>
             </div>
 
-            <div class="artist-content">
+            <div
+                class="artist-content"
+                v-if="artist.songs.length || artist.albums.length"
+            >
                 <section class="top-songs">
                     <h3 class="subtitle">Top Songs</h3>
                     <Song
                         v-for="song in artist.songs"
                         :key="song.id"
                         :song="song"
-                    >
-                    </Song>
+                    />
                 </section>
 
                 <section class="albums">
                     <h3 class="subtitle">Albums</h3>
-                    <ul>
-                        <li v-for="album in artist.albums" :key="album.id">
-                            {{ album.name }}
-                            <img :src="album.cover" alt="album cover" />
-                        </li>
-                    </ul>
+
+                    <div class="album-grid">
+                        <AlbumCard
+                            v-for="album in artist.albums"
+                            :key="album.id"
+                            :album="album"
+                        />
+                    </div>
                 </section>
             </div>
-        </template>
+            <p class="empty-artist-message" v-else>
+                The artist has not released any song yet :( Or we just do not
+                know about it! You can add songs _here_
+            </p>
+        </div>
     </div>
-    <p v-else class="text-center">Artist is not found! Please, try again</p>
+    <p v-else>Sorry, this artist is not found :(</p>
 </template>
 
 <script>
-import Song from "../components/cards/Song";
+import Song from "../../components/cards/Song";
+import AlbumCard from "../../components/cards/AlbumCard";
 
 export default {
+    components: {
+        Song,
+        AlbumCard,
+    },
     data() {
         return {
             artist: null,
             notFound: false,
         };
-    },
-    components: {
-        Song,
     },
     async created() {
         let artistID = this.$route.params.id;
@@ -85,12 +77,10 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-@import "../../src/assets/style/variables";
+<style lang="scss">
+@import "../../../src/assets/style/variables";
 
-.artist-page {
-    max-width: fit-content;
-    
+.artist-home {
     .artist-info {
         background-color: $color-purple-dark;
         color: #d3d3d3; // TODO:
@@ -101,7 +91,7 @@ export default {
         max-width: fit-content;
 
         display: grid;
-        grid-template-columns: max-content max-content 1fr;
+        grid-template-columns: 1fr 3fr;
         grid-template-rows: max-content;
         grid-column-gap: 4rem;
         grid-row-gap: 1rem;
@@ -134,7 +124,7 @@ export default {
         &__desc {
             max-width: 50rem;
             grid-row: 2 / 3;
-            grid-column: 2 / 4;
+            grid-column: 2 / 3;
 
             font-size: 1.5rem;
             line-height: 2.2rem;
@@ -157,9 +147,14 @@ export default {
     }
 
     .artist-content {
-        .top-songs {
+        max-width: 94rem;
+        
+        & > section {
             margin: 3rem;
             padding: 2rem;
+        }
+
+        .top-songs {
             border-bottom: 1px solid gray;
         }
 
@@ -168,11 +163,18 @@ export default {
             font-size: 2.6rem;
         }
 
-        img {
-            width: 200px;
-            border-radius: 50%;
-            border: 3px solid #777;
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+            grid-template-rows: 1fr 1fr;
         }
     }
+}
+
+.empty-artist-message {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+    // text-align: center;
 }
 </style>
