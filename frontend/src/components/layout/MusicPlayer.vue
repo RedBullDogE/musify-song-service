@@ -1,7 +1,10 @@
 <template>
     <transition name="show">
         <div class="player-container" v-show="isPlayerShown">
-            <div class="player">
+            <div class="player"
+                @keydown.left="slideSong(currentTime - 5)"
+                @keydown.right="slideSong(currentTime + 5)"
+            >
                 <div class="progressbar-container">
                     <VueSlider
                         class="progressbar"
@@ -13,6 +16,8 @@
                         tooltip="none"
                         :processStyle="{ backgroundColor: '#df83f1' }"
                         :dotSize="10"
+                        :lazy="true"
+                        :keydownHook="rewindAudio"
                     />
                     <div class="progressbar-time" v-if="player.src">
                         {{ player.currentTime || 0 | formatTime }} /
@@ -92,6 +97,14 @@ export default {
         slideSong(value) {
             this.$store.dispatch("slideSong", value);
         },
+        rewindAudio(event) {
+            switch(event.key) {
+                case 'ArrowLeft':
+                    return i => (i - 5)
+                case 'ArrowRight':
+                    return i => (i + 5)
+            }
+        }
     },
 };
 </script>
