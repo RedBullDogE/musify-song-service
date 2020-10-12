@@ -3,7 +3,7 @@
         <button
             class="pause"
             @click="pauseSong"
-            v-if="isCurrentSongInPlayer && isPlaying"
+            v-if="isCurrentSongInPlayer && currentSong.isPlaying"
         >
             <ion-icon name="pause"></ion-icon>
         </button>
@@ -23,7 +23,7 @@ import { mapState } from "vuex";
 export default {
     props: ["song"],
     computed: {
-        ...mapState(["currentSong", "isPlaying", "player"]),
+        ...mapState(["currentSong", "player"]),
         isCurrentSongInPlayer() {
             return (
                 this.currentSong.length === this.song.length &&

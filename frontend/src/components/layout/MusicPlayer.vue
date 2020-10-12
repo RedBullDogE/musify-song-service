@@ -1,15 +1,15 @@
 <template>
     <transition name="show">
-        <div class="player-container" v-show="isPlayerShown">
+        <div class="player-container" v-show="currentSong.src">
             <div class="player"
-                @keydown.left="slideSong(currentTime - 5)"
-                @keydown.right="slideSong(currentTime + 5)"
+                @keydown.left="slideSong(currentSong.currentTime - 5)"
+                @keydown.right="slideSong(currentSong.currentTime + 5)"
             >
                 <div class="progressbar-container">
                     <VueSlider
                         class="progressbar"
                         :disabled="!player.src"
-                        :value="currentTime || 0"
+                        :value="currentSong.currentTime || 0"
                         @change="slideSong"
                         :min="0"
                         :max="Math.ceil(player.duration) || 100"
@@ -40,7 +40,7 @@
                     </button>
                     <button
                         class="play-btn"
-                        v-if="!isPlaying"
+                        v-if="!currentSong.isPlaying"
                         @click="$store.dispatch('play')"
                     >
                         <ion-icon name="play"></ion-icon>
@@ -81,10 +81,8 @@ export default {
     computed: {
         ...mapState([
             "currentSong",
-            "isPlaying",
             "player",
             "currentTime",
-            "isPlayerShown",
         ]),
     },
     components: {

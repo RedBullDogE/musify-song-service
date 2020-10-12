@@ -5,53 +5,60 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        currentSong: {},
+        playlist: {},
+        currentSong: {
+            isPlaying: false,
+            currentTime: 0,
+            artist: null,
+            name: null,
+            src: null,
+        },
         player: new Audio(),
-        isPlaying: false,
-        currentTime: 0,
-        isPlayerShown: false
     },
     mutations: {
         play(state) {
-            state.isPlaying = true
+            state.currentSong.isPlaying = true
         },
         pause(state) {
-            state.isPlaying = false
+            state.currentSong.isPlaying = false
         },
-        changeVolume(state, payload) {
-            state.player.volume = payload
+        changeVolume(state, volume) {
+            state.player.volume = volume
         },
-        slideSong(state, payload) {
-            state.player.currentTime = payload
-        },
-        showPlayer(state) {
-            state.isPlayerShown = true
+        slideSong(state, newTime) {
+            state.player.currentTime = newTime
         },
         hidePlayer(state) {
-            state.isPlayerShown = false
-            state.currentSong = {},
+            state.currentSong.isPlaying = false
+            state.currentSong.currentTime = 0
+
+            state.currentSong.artist = null
+            state.currentSong.name = null
+            state.currentSong.src = null
+
             state.player = new Audio()
-            state.isPlaying = false
-            state.currentTime = 0
+        },
+        setSong(state, song) {
+            state.currentSong.name = song.name
+            state.currentSong.artist = song.artist
+            state.currentSong.src = song.src
+
+            state.currentSong.currentTime = 0
+            state.player.src = song.src
         }
     },
     actions: {
-        async play({ commit, state, dispatch }, payload) {
-            if (typeof payload !== 'undefined') {
-                state.currentSong = payload;
-                state.currentTime = 0;
-
-                state.player.src = payload.src;
+        async play({ commit, state, dispatch }, song) {
+            if (typeof song !== 'undefined') {
+                commit('setSong', song)
 
                 state.player.addEventListener("timeupdate", () => {
-                    state.currentTime = state.player.currentTime;
+                    state.currentSong.currentTime = state.player.currentTime;
                 });
 
                 state.player.addEventListener("ended", () => {
                     dispatch('pause');
                 });
-
-                commit('showPlayer');
             }
 
             try {
@@ -59,7 +66,7 @@ export default new Vuex.Store({
                 commit('play')
             } catch (error) {
                 console.log(`DEBUG: there is some problem in store: play()\n payload:`)
-                console.log(payload);
+                console.log(song);
                 console.error(error);
             }
         },
@@ -75,7 +82,7 @@ export default new Vuex.Store({
             commit('slideSong', payload)
         },
         hidePlayer({ commit, state, dispatch }) {
-            if (state.isPlaying) {
+            if (state.currentSong.isPlaying) {
                 dispatch('pause')
             }
 
