@@ -16,7 +16,12 @@
         <div class="album-content">
             <section class="top-songs">
                 <h3 class="subtitle">Song List</h3>
-                <Song v-for="song in album.songs" :key="song.id" :song="song" />
+                <Song
+                    v-for="song in album.songs"
+                    :key="song.id"
+                    :song="song"
+                    @setPlaylist="$store.dispatch('setPlaylist', album.songs)"
+                />
             </section>
         </div>
     </div>

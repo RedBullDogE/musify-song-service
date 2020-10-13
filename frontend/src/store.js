@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import { isEqual } from './utils'
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -95,8 +97,10 @@ export default new Vuex.Store({
 
             commit('hidePlayer')
         },
-        setPlaylist({ commit }, payload) {
-            commit('setPlaylist', payload)
+        setPlaylist({ commit, state }, payload) {
+            if (!isEqual(state.playlist, payload)) {
+                commit('setPlaylist', payload)
+            }
         },
         playNext({ commit, state, dispatch }) {
             let currentSong = state.currentSong
@@ -106,7 +110,7 @@ export default new Vuex.Store({
             })
 
             if (typeof index === 'undefined') {
-                throw Error('song is not found! wtf??')
+                throw Error('Something goes wrong... Next song is not found')
             }
 
             if (index + 1 >= state.playlist.length) {
