@@ -26,10 +26,7 @@ export default {
         ...mapState(["currentSong", "player"]),
         isCurrentSongInPlayer() {
             return (
-                this.currentSong.length === this.song.length &&
-                this.currentSong.name === this.song.name &&
-                this.currentSong.artist === this.song.artist &&
-                this.currentSong.src === this.song.src
+                this.currentSong.id === this.song.id
             );
         },
     },
@@ -39,7 +36,10 @@ export default {
                 this.$store.dispatch("play");
                 return;
             }
+
             this.$store.dispatch("play", this.song);
+            
+            this.$emit('setPlaylist')
         },
         pauseSong() {
             this.$store.dispatch("pause");

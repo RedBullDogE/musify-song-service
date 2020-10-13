@@ -24,6 +24,7 @@
                         v-for="song in artist.songs"
                         :key="song.id"
                         :song="song"
+                        @setPlaylist="setPlaylist"
                     />
                 </section>
 
@@ -63,6 +64,11 @@ export default {
             notFound: false,
         };
     },
+    methods: {
+        setPlaylist() {
+            this.$store.dispatch("setPlaylist", this.artist.songs);
+        },
+    },
     async created() {
         let artistID = this.$route.params.id;
         let response = await fetch(
@@ -73,7 +79,7 @@ export default {
         } else {
             this.artist = await response.json();
         }
-        this.$store.dispatch('setPlaylist', this.artist.songs)
+        // this.$store.dispatch("setPlaylist", this.artist.songs);
     },
 };
 </script>
@@ -149,7 +155,7 @@ export default {
 
     .artist-content {
         max-width: 94rem;
-        
+
         & > section {
             margin: 3rem;
             padding: 2rem;
