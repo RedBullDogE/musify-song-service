@@ -1,7 +1,8 @@
 <template>
     <transition name="show">
         <div class="player-container" v-show="currentSong.src">
-            <div class="player"
+            <div
+                class="player"
                 @keydown.left="slideSong(currentSong.currentTime - 5)"
                 @keydown.right="slideSong(currentSong.currentTime + 5)"
             >
@@ -35,7 +36,10 @@
                 </div>
 
                 <div class="player__control">
-                    <button class="prev-btn">
+                    <button
+                        class="prev-btn"
+                        @click="$store.dispatch('playPrev')"
+                    >
                         <ion-icon name="play-skip-back"></ion-icon>
                     </button>
                     <button
@@ -52,7 +56,10 @@
                     >
                         <ion-icon name="pause"></ion-icon>
                     </button>
-                    <button class="next-btn">
+                    <button
+                        class="next-btn"
+                        @click="$store.dispatch('playNext')"
+                    >
                         <ion-icon name="play-skip-forward"></ion-icon>
                     </button>
                 </div>
@@ -79,11 +86,7 @@ export default {
         return {};
     },
     computed: {
-        ...mapState([
-            "currentSong",
-            "player",
-            "currentTime",
-        ]),
+        ...mapState(["currentSong", "player", "currentTime"]),
     },
     components: {
         VueSlider,
@@ -96,13 +99,13 @@ export default {
             this.$store.dispatch("slideSong", value);
         },
         rewindAudio(event) {
-            switch(event.key) {
-                case 'ArrowLeft':
-                    return i => (i - 5)
-                case 'ArrowRight':
-                    return i => (i + 5)
+            switch (event.key) {
+                case "ArrowLeft":
+                    return (i) => i - 5;
+                case "ArrowRight":
+                    return (i) => i + 5;
             }
-        }
+        },
     },
 };
 </script>
@@ -229,16 +232,16 @@ export default {
             outline: none;
             border: none;
             background: none;
-            
+
             font-size: 2rem;
             color: currentColor;
 
-            transition: all .3s;
+            transition: all 0.3s;
 
             cursor: pointer;
 
             &:hover {
-                color: #999 ;
+                color: #999;
             }
         }
     }

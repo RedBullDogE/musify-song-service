@@ -73,6 +73,7 @@ export default {
         } else {
             this.artist = await response.json();
         }
+        this.$store.dispatch('setPlaylist', this.artist.songs)
     },
 };
 </script>

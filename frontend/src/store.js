@@ -5,13 +5,14 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        playlist: {},
+        playlist: [],
         currentSong: {
             isPlaying: false,
             currentTime: 0,
             artist: null,
             name: null,
             src: null,
+            id: null
         },
         player: new Audio(),
     },
@@ -35,6 +36,7 @@ export default new Vuex.Store({
             state.currentSong.artist = null
             state.currentSong.name = null
             state.currentSong.src = null
+            state.currentSong.id = null
 
             state.player = new Audio()
         },
@@ -42,9 +44,14 @@ export default new Vuex.Store({
             state.currentSong.name = song.name
             state.currentSong.artist = song.artist
             state.currentSong.src = song.src
+            state.currentSong.id = song.id
+            state.currentSong.isPlaying = false
 
             state.currentSong.currentTime = 0
             state.player.src = song.src
+        },
+        setPlaylist(state, playlist) {
+            state.playlist = playlist
         }
     },
     actions: {
@@ -57,7 +64,7 @@ export default new Vuex.Store({
                 });
 
                 state.player.addEventListener("ended", () => {
-                    dispatch('pause');
+                    dispatch('playNext');
                 });
             }
 
@@ -87,6 +94,51 @@ export default new Vuex.Store({
             }
 
             commit('hidePlayer')
-        }
+        },
+        setPlaylist({ commit }, payload) {
+            commit('setPlaylist', payload)
+        },
+        playNext({ commit, state, dispatch }) {
+            let currentSong = state.currentSong
+
+            let index = state.playlist.findIndex((song) => {
+                return song.id === currentSong.id
+            })
+
+            if (typeof index === 'undefined') {
+                throw Error('song is not found! wtf??')
+            }
+
+            if (index + 1 >= state.playlist.length) {
+                // TODO: 
+                return
+            }
+
+            let newSong = state.playlist[index + 1]
+
+            commit('setSong', newSong)
+            dispatch('play')
+        },
+        playPrev({ commit, state, dispatch }) {
+            let currentSong = state.currentSong
+
+            let index = state.playlist.findIndex((song) => {
+                return song.id === currentSong.id
+            })
+
+            if (typeof index === 'undefined') {
+                throw Error('song is not found! wtf??')
+            }
+
+            if (index - 1 < 0) {
+                // TODO: 
+                return
+            }
+
+            let newSong = state.playlist[index - 1]
+
+            commit('setSong', newSong)
+            dispatch('play')
+        },
     }
 })
