@@ -1,6 +1,5 @@
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.response import Response
-# from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from .models import Song, Artist, Album
 from .serializers import *
