@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     # Custom Applications
-    'songs'
+    'app_auth',
+    'songs',
 ]
 
 MIDDLEWARE = [
