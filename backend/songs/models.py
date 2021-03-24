@@ -1,4 +1,5 @@
 from django.db import models
+import uuid
 
 GENRE_CHOICES = [
     ('rock', 'Rock'),
@@ -15,6 +16,11 @@ GENRE_CHOICES = [
 
 class Artist(models.Model):
     """Model definition for Artist."""
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
+    )
     name = models.CharField('Artist', max_length=64)
     genre = models.CharField('Genre', max_length=32, choices=GENRE_CHOICES)
     create_year = models.IntegerField('Creation year')
@@ -71,6 +77,11 @@ class Song(models.Model):
 
 
 class Album(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
+    )
     name = models.CharField('Album', max_length=64)
     artist = models.ForeignKey(
         'Artist', on_delete=models.CASCADE, related_name='albums')
