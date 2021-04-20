@@ -1,31 +1,36 @@
 from django.conf import settings
 from django.contrib.auth import login, logout
-from rest_framework import authentication, generics, permissions, response, views
+from rest_framework.generics import CreateAPIView, RetrieveAPIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .serializers import LoginSerializer, UserSerializer
 
 
-class SigninView(views.APIView):
-    permission_classes = (permissions.AllowAny,)
-    authentication_classes = (authentication.SessionAuthentication,)
+class SigninView(APIView):
+    permission_classes = (AllowAny,)
+    serializer_class = LoginSerializer
 
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
         login(request, user)
-        return response.Response(UserSerializer(user).data)
+        return Response(UserSerializer(user).data)
 
 
-class SignoutView(views.APIView):
+class SignoutView(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         logout(request)
-        return response.Response()
+        return Response()
 
 
-class SignupView(generics.CreateAPIView):
+class SignupView(CreateAPIView):
     serializer_class = UserSerializer
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (AllowAny,)
 
     def perform_create(self, serializer):
         user = serializer.save()
@@ -33,7 +38,7 @@ class SignupView(generics.CreateAPIView):
         login(self.request, user)
 
 
-class UserView(generics.RetrieveAPIView):
+class UserView(RetrieveAPIView):
     serializer_class = UserSerializer
     lookup_field = "pk"
 
