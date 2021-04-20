@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.contrib.auth import login, logout
-from rest_framework import views, generics, response, permissions, authentication
-from .serializers import UserSerializer, LoginSerializer
+from rest_framework import authentication, generics, permissions, response, views
+
+from .serializers import LoginSerializer, UserSerializer
 
 
 class SigninView(views.APIView):
@@ -11,7 +12,7 @@ class SigninView(views.APIView):
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
+        user = serializer.validated_data["user"]
         login(request, user)
         return response.Response(UserSerializer(user).data)
 
@@ -34,7 +35,7 @@ class SignupView(generics.CreateAPIView):
 
 class UserView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
-    lookup_field = 'pk'
+    lookup_field = "pk"
 
     def get_object(self, *args, **kwargs):
         return self.request.user
