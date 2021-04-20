@@ -3,7 +3,7 @@ import re
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import Album, Artist, Song
+from .models import Album, Artist, Song, UserSongs
 
 
 class SongAdmin(admin.ModelAdmin):
@@ -27,3 +27,4 @@ class ArtistAdmin(admin.ModelAdmin):
 admin.site.register(Song, SongAdmin)
 admin.site.register(Album, AlbumAdmin)
 admin.site.register(Artist, ArtistAdmin)
+admin.site.register(UserSongs)

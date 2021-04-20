@@ -1,5 +1,6 @@
 import uuid
 
+from django.contrib.auth import get_user_model
 from django.db import models
 
 GENRE_CHOICES = [
@@ -19,7 +20,7 @@ class Artist(models.Model):
     """Model definition for Artist."""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField("Artist", max_length=64)
+    name = models.CharField("Name", max_length=64)
     genre = models.CharField("Genre", max_length=32, choices=GENRE_CHOICES)
     create_year = models.IntegerField("Creation year")
     picture = models.ImageField(
@@ -45,7 +46,7 @@ class Artist(models.Model):
 
 
 class Song(models.Model):
-    name = models.CharField("Song", max_length=64)
+    name = models.CharField("Title", max_length=64)
     artist = models.ForeignKey("Artist", on_delete=models.CASCADE, related_name="songs")
     genre = models.CharField("Genre", max_length=32, choices=GENRE_CHOICES)
     pub_year = models.IntegerField("Publication year")
@@ -67,7 +68,7 @@ class Song(models.Model):
 
 class Album(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField("Album", max_length=64)
+    name = models.CharField("Title", max_length=64)
     artist = models.ForeignKey(
         "Artist", on_delete=models.CASCADE, related_name="albums"
     )
@@ -86,3 +87,15 @@ class Album(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class UserSongs(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    songs = models.ManyToManyField("Song", related_name="user_songs")
+
+    class Meta:
+        verbose_name = "User Songs"
+        verbose_name_plural = "User Songs"
+
+    def __str__(self):
+        return f"{self.user.username} - {self.songs.count()} song(s)"
