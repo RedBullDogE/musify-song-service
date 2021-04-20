@@ -1,17 +1,31 @@
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-from rest_framework.response import Response
+from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from .models import Song, Artist, Album
-from .serializers import *
+from .models import Album, Artist, Song
+from .serializers import (
+    AlbumDetailSerializer,
+    AlbumListSerializer,
+    ArtistDetailSerializer,
+    ArtistListSerializer,
+    SongDetailSerializer,
+    SongListSerializer,
+)
+
+
+class LibraryView(ListAPIView):
+    queryset = Song.objects.all()
+    serializer_class = SongListSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class SongReadViewSet(ReadOnlyModelViewSet):
     queryset = Song.objects.all()
 
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.action == "list":
             return SongListSerializer
-        elif self.action == 'retrieve':
+        elif self.action == "retrieve":
             return SongDetailSerializer
 
 
@@ -19,60 +33,17 @@ class ArtistReadViewSet(ReadOnlyModelViewSet):
     queryset = Artist.objects.all()
 
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.action == "list":
             return ArtistListSerializer
-        elif self.action == 'retrieve':
+        elif self.action == "retrieve":
             return ArtistDetailSerializer
 
 
-class AlbumDetailView(ReadOnlyModelViewSet):
+class AlbumReadViewSet(ReadOnlyModelViewSet):
     queryset = Album.objects.all()
 
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.action == "list":
             return AlbumListSerializer
-        elif self.action == 'retrieve':
+        elif self.action == "retrieve":
             return AlbumDetailSerializer
-
-
-# APIView implementation
-
-# class SongListView(ListAPIView):
-#     """
-#     Display all songs with short info
-#     """
-#     queryset = Song.objects.all()
-#     serializer_class = SongListSerializer
-
-
-# class SongDetailView(RetrieveAPIView):
-#     """
-#     Detailed info of specific song
-#     """
-#     queryset = Song.objects.all()
-#     serializer_class = SongDetailSerializer
-
-
-# class ArtistListView(ListAPIView):
-#     """
-#     Display all artists
-#     """
-#     queryset = Artist.objects.all()
-#     serializer_class = ArtistListSerializer
-
-
-# class ArtistDetailView(RetrieveAPIView):
-#     """
-#     Artist Details
-#     """
-#     queryset = Artist.objects.all()
-#     serializer_class = ArtistDetailSerializer
-
-
-# class AlbumListView(ListAPIView):
-#     """
-#     Display all albums
-#     """
-
-#     queryset = Album.objects.all()
-#     serializer_class = AlbumSerializer

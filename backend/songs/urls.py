@@ -1,18 +1,11 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from .views import *
+from .views import AlbumReadViewSet, ArtistReadViewSet, LibraryView, SongReadViewSet
 
 router = DefaultRouter()
-router.register('songs', SongReadViewSet)
-router.register('artists', ArtistReadViewSet)
-router.register('albums', AlbumDetailView)
+router.register("songs", SongReadViewSet)
+router.register("artists", ArtistReadViewSet)
+router.register("albums", AlbumReadViewSet)
 
-urlpatterns = router.urls
-
-# urlpatterns = [
-#     path('songs/', SongListView.as_view()),
-#     path('songs/<int:pk>/', SongDetailView.as_view()),
-#     path('artists/', ArtistListView.as_view()),
-#     path('artists/<int:pk>/', ArtistDetailView.as_view()),
-# ]
+urlpatterns = router.urls + [path("lib/", LibraryView.as_view())]
