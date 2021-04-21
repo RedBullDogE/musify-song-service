@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import ListAPIView, get_object_or_404
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
@@ -16,9 +17,15 @@ from .serializers import (
 )
 
 
+class LibraryPagePagination(PageNumberPagination):
+    page_size = 10
+    page_query_param = "page"
+
+
 class LibraryView(ListAPIView):
     serializer_class = SongListSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = LibraryPagePagination
 
     def get_queryset(self):
         user_id = self.request.user.id

@@ -16,7 +16,13 @@ router.register("artists", ArtistReadViewSet)
 router.register("albums", AlbumReadViewSet)
 
 urlpatterns = router.urls + [
-    path("lib/", LibraryView.as_view()),
-    path("add-song/<int:song_id>/", add_song_to_library),
-    path("remove-song/<int:song_id>/", remove_song_from_library),
+    path("lib/", LibraryView.as_view(), name="song-library"),
+    path(
+        "lib/add-song/<int:song_id>/", add_song_to_library, name="add-song-to-library"
+    ),
+    path(
+        "lib/remove-song/<int:song_id>/",
+        remove_song_from_library,
+        name="remove-song-from-library",
+    ),
 ]
