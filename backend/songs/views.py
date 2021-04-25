@@ -1,17 +1,14 @@
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.generics import ListAPIView, get_object_or_404
+from rest_framework.generics import ListAPIView, RetrieveAPIView, get_object_or_404
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from .models import Album, Artist, Song, UserSongs
 from .serializers import (
     AlbumDetailSerializer,
-    AlbumListSerializer,
     ArtistDetailSerializer,
-    ArtistListSerializer,
     SongDetailSerializer,
     SongListSerializer,
 )
@@ -32,34 +29,19 @@ class LibraryView(ListAPIView):
         return Song.objects.filter(user_songs__id=user_id)
 
 
-class SongReadViewSet(ReadOnlyModelViewSet):
+class SongDetailsView(RetrieveAPIView):
     queryset = Song.objects.all()
-
-    def get_serializer_class(self):
-        if self.action == "list":
-            return SongListSerializer
-        elif self.action == "retrieve":
-            return SongDetailSerializer
+    serializer_class = SongDetailSerializer
 
 
-class ArtistReadViewSet(ReadOnlyModelViewSet):
+class ArtistDetailsView(RetrieveAPIView):
     queryset = Artist.objects.all()
-
-    def get_serializer_class(self):
-        if self.action == "list":
-            return ArtistListSerializer
-        elif self.action == "retrieve":
-            return ArtistDetailSerializer
+    serializer_class = ArtistDetailSerializer
 
 
-class AlbumReadViewSet(ReadOnlyModelViewSet):
+class AlbumDetailsView(RetrieveAPIView):
     queryset = Album.objects.all()
-
-    def get_serializer_class(self):
-        if self.action == "list":
-            return AlbumListSerializer
-        elif self.action == "retrieve":
-            return AlbumDetailSerializer
+    serializer_class = AlbumDetailSerializer
 
 
 @api_view(["POST"])

@@ -1,28 +1,37 @@
-from django.urls import path
-from rest_framework.routers import DefaultRouter
+from django.urls import include, path
 
 from .views import (
-    AlbumReadViewSet,
-    ArtistReadViewSet,
+    AlbumDetailsView,
+    ArtistDetailsView,
     LibraryView,
-    SongReadViewSet,
+    SongDetailsView,
     add_song_to_library,
     remove_song_from_library,
 )
 
-router = DefaultRouter()
-router.register("songs", SongReadViewSet)
-router.register("artists", ArtistReadViewSet)
-router.register("albums", AlbumReadViewSet)
-
-urlpatterns = router.urls + [
-    path("lib/", LibraryView.as_view(), name="song-library"),
+urlpatterns = [
+    # Library related paths
+    path(route="lib/", view=LibraryView.as_view(), name="song-library"),
     path(
-        "lib/add-song/<int:song_id>/", add_song_to_library, name="add-song-to-library"
+        route="lib/add-song/<int:song_id>/",
+        view=add_song_to_library,
+        name="add-song-to-library",
     ),
     path(
-        "lib/remove-song/<int:song_id>/",
-        remove_song_from_library,
+        route="lib/remove-song/<int:song_id>/",
+        view=remove_song_from_library,
         name="remove-song-from-library",
     ),
+    # Entity details related paths
+    path(route="song/<int:pk>", view=SongDetailsView.as_view(), name="song-details"),
+    path(
+        route="album/<uuid:pk>", view=AlbumDetailsView.as_view(), name="album-details"
+    ),
+    path(
+        route="artist/<uuid:pk>",
+        view=ArtistDetailsView.as_view(),
+        name="artist-details",
+    ),
+    # Search path
+    path("search/", include("search.urls")),
 ]

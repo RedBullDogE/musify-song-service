@@ -7,12 +7,14 @@ verify_ssl = true
 autopep8 = "*"
 black = "*"
 pre-commit = "*"
+flake8 = "*"
 
 [packages]
 django = "*"
 djangorestframework = "*"
 pillow = "*"
 django-cors-headers = "*"
+django-elasticsearch-dsl = "*"
 
 [requires]
 python_version = "3.8"
