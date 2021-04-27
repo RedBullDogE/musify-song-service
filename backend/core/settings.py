@@ -128,6 +128,7 @@ REST_FRAMEWORK = {
         #   then open endpoints on a case-by-case basis
         "rest_framework.permissions.AllowAny",
     ),
+    "EXCEPTION_HANDLER": "search.connection_error_handler.custom_exception_handler",
     "TEST_REQUEST_RENDERER_CLASSES": (
         "rest_framework.renderers.MultiPartRenderer",
         "rest_framework.renderers.JSONRenderer",
